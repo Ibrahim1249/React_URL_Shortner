@@ -22,14 +22,24 @@ function SignUp() {
   const navigate = useNavigate();
   let longLink = searchParams.get("createNew");
 
-  const [errors , setErrors] = useState({});
+  const [errors , setErrors] = useState([]);
   const [formData,setFormData] = useState({
      email:"",
      password:"",
-     name : "",
+     name :"",
      profile_pic:null
   })
   const {loading , data , error , fn:signUp} = useFetch(signup, formData);
+
+  const { fetchUser } = UrlState()
+  useEffect(() => {
+
+    if (error === null && data) {
+      navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
+      fetchUser();
+    }
+  }, [loading, error]);
+
 
   function handleInputChange(e){
     const {name , value , files} = e.target;
@@ -66,9 +76,6 @@ function SignUp() {
   }
 
 
-  useEffect(()=>{
-   navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
-  },[data , error])
 
 
   return (
@@ -81,16 +88,17 @@ function SignUp() {
       {error && <Error message={error?.message} />}
     </CardHeader>
     <CardContent className="space-y-2">
-      <div className="space-y-1">
+      <div className="space-y-1 mb-2">
         <Input
           name="name"
           type="text"
           placeholder="Enter Name"
           onChange={handleInputChange}
+    
         />
       </div>
       {errors.name && <Error message={errors.name} />}
-      <div className="space-y-1">
+      <div className="space-y-1 mb-2">
         <Input
           name="email"
           type="email"
@@ -99,7 +107,7 @@ function SignUp() {
         />
       </div>
       {errors.email && <Error message={errors.email} />}
-      <div className="space-y-1">
+      <div className="space-y-1 mb-2">
         <Input
           name="password"
           type="password"
@@ -108,7 +116,7 @@ function SignUp() {
         />
       </div>
       {errors.password && <Error message={errors.password} />}
-      <div className="space-y-1">
+      <div className="space-y-1 mb-2">
         <input
           name="profile_pic"
           type="file"
