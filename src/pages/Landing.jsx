@@ -12,8 +12,11 @@ import {
 function Landing() {
   const [longUrl, setLongUrl] = useState("");
   const navigate = useNavigate()
-  function handleShorten(){
-
+  function handleShorten(e){
+    e.preventDefault()
+      if(longUrl){
+         navigate(`/auth?createNew=${longUrl}`)
+      }
   }
   return (
     <>
